@@ -82,16 +82,22 @@
                                             class="bg-gray-400 p-1 rounded-md w-20 font-semibold"
                                             x-data=""
                                             x-on:click.prevent="
+                                                console.log('Button clicked'); 
                                                 $dispatch('open-modal', 'view-destination'); 
+                                                
+                                                let tipeData = '{{ implode(', ', $destination->tipe) }}';
+                                                console.log('Tipe Data:', tipeData); // Debugging
+                                                
                                                 $dispatch('set-destination', {
                                                     foto: '{{ url('storage/' . $destination->foto) }}',
                                                     deskripsi: '{{ $destination->deskripsi }}',
                                                     nama: '{{ $destination->nama }}',
-                                                    tipe: '{{ implode(', ', $destination->tipe) }}',
-                                                });"
+                                                    tipe: tipeData, // Kirim tipeData yang sudah dicek
+                                                });
+                                            "
                                         >
                                             View
-                                        </button>
+                                        </button>                                    
                                         <a href="{{ route('destinations.edit', $destination) }}">
                                             <button class="bg-yellow-400 p-1 rounded-md w-20 font-semibold">Edit</button>
                                         </a>
@@ -104,26 +110,31 @@
             </table>
         </div>
 
-        {{-- <x-modal name="view-destination" focusable>
+        <x-modal name="view-destination" focusable>
             <div x-data="{ destination: {} }" x-on:set-destination.window="destination = $event.detail">
                 <div class="p-6 items-center">
-                    <div class="tenant-item">
-                        <img :src="destination.foto" alt="foto" class="tenant-image">
-                        <div class="tenant-info">
-                            <p class="tenant-category"><i class="fas fa-map-marker-alt"></i> <span x-text="destination.location"></span></p>
-                            <h3 class="tenant-name" x-text="destination.nama"></h3>
-                            <p class="tenant-description" x-text="destination.deskripsi"></p>                            
-                            </div>
+                    <div class="activity-card">
+                        <img :src="destination.foto" alt="foto" class="activity-image">
+                        <div class="activity-content">
+                            <h2 x-text="destination.nama"></h2>
+                            <p x-text="destination.deskripsi"></p>
+                            <div x-data="{ destination: { tipe: '' } }" x-on:set-destination.window="destination = $event.detail">
+                                <div class="activity-details">
+                                    <template x-for="tipe in destination.tipe ? destination.tipe.split(', ') : []">
+                                        <span class="activity-tag mr-1" x-text="tipe.charAt(0).toUpperCase() + tipe.slice(1)"></span>
+                                    </template>
+                                </div>
+                            </div>                                                                                    
                         </div>
                     </div>
-                    <div class="mb-6 ml-6 justify-end">
+                    <div class="my-6 ml-6 justify-end">
                         <x-secondary-button x-on:click="$dispatch('close-modal', 'view-destination')">
                             Close
                         </x-secondary-button>
                     </div>
                 </div>
             </div>
-        </x-modal> --}}
+        </x-modal>
 
         <div class="mt-4">
             {{ $destinations->links() }}
