@@ -1,4 +1,4 @@
-<x-app-layout title="List Destinations">
+<x-app-layout title="Destinations">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-2">
 
         @if (session()->has('success'))
