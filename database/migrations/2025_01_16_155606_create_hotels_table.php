@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('hotels', function (Blueprint $table) {
             $table->id();
-            $table->string('tipe')->nullable();
+            $table->double('jarak');
             $table->string('nama');
             $table->integer('harga');
-            $table->string('location');
+            $table->string('alamat');
             $table->string('foto')->default('noimage.png');
             $table->timestamps();
         });

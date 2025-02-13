@@ -6,6 +6,7 @@
     <title>YIA Artwork</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --primary: #4361ee;
@@ -32,25 +33,67 @@
             padding: 20px;
         }
 
+        header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            padding: 15px 20px;
+            gap: 10px;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            margin-bottom: 12px;
+            background-color: white;
+            border-radius: 15px;
+        }
+
         .back-button {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 0.8rem 1.5rem;
-            background: white;
-            border: none;
-            border-radius: 10px;
             color: var(--primary);
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 1.5rem;
             text-decoration: none;
         }
 
-        .back-button:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .right {
+            grid-column: 3;
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-switch {
+            display: flex;
+            gap: 5px;
+            background: rgba(255,255,255,0.9);
+            padding: 5px;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .lang-btn {
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .info-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
         }
 
         .filter-card {
@@ -61,6 +104,9 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: visible;
+            z-index: 30;
         }
 
         .filter-section {
@@ -79,11 +125,30 @@
             cursor: pointer;
         }
 
+        [x-dropdown] {
+            position: relative;
+            z-index: 50;
+        }
+
+        [x-dropdown] [x-slot="content"] {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 100;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 10px;
+        }
+
         .artwork-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
+            position: relative;
+            z-index: 10;
         }
 
         .artwork-item {
@@ -152,79 +217,127 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="javascript:history.back()" class="back-button">
+    <header style="padding-inline: 35px;">
+        <a href="/information" class="back-button">
             <i class="fas fa-arrow-left"></i>
-            Back to Information
+            <span data-en="Back to information" data-id="Kembali ke Informasi"></span>
         </a>
 
+        <div class="right">
+            <div class="language-switch">
+                <button class="lang-btn" id="idBtn">ID</button>
+                <button class="lang-btn active" id="enBtn">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
         <div class="filter-card">
-            <h2 style="color: var(--primary); margin-bottom: 1rem;">YIA Artwork Collection</h2>
+            <h2 class="info-title" data-en="YIA Artwork Collection" data-id="Karya Seni YIA"></h2>
             <div class="filter-section">
-                <select class="filter-dropdown">
-                    <option value="">All Locations</option>
-                    <option value="terminal1">Terminal 1</option>
-                    <option value="terminal2">Terminal 2</option>
-                    <option value="departure">Departure Hall</option>
-                    <option value="arrival">Arrival Hall</option>
-                    <option value="garden">Airport Garden</option>
-                </select>
+                <x-dropdown>
+                    <x-slot name="trigger">
+                        <button class="filter-dropdown inline-flex items-center justify-between px-3 py-2">
+                            <div>
+                                <p 
+                                data-en= 
+                                    @if (request('location'))
+                                        "{{ request('location') }}"
+                                    @else
+                                        "All Locations"
+                                    @endif 
+                                data-id=
+                                    @if (request('location'))
+                                        "{{ request('location') }}"
+                                    @else
+                                        "{{ "Semua Lokasi" }}"
+                                    @endif
+                                >
+                                </p>
+                            </div>
+                            <div class="ms-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        
+                        <x-dropdown-link :href="route('welcome.information.artwork', array_merge(request()->query(), ['location' => null]))"
+                            class="{{ is_null(request('location')) ? 'bg-gray-200 font-bold' : '' }}" data-en="{{ __('All Location') }}" data-id="{{ __('Semua Lokasi') }}">
+                            {{ __('All Locations') }}
+                        </x-dropdown-link>
+                    
+                        @foreach ($allLocation as $lokasi)
+                            <x-dropdown-link :href="route('welcome.information.artwork', array_merge(request()->query(), ['location' => $lokasi]))"
+                                class="{{ request('location') === $lokasi ? 'bg-gray-200 font-bold' : '' }}">
+                                {{ $lokasi }}
+                            </x-dropdown-link>
+                        @endforeach
+                    
+                    </x-slot>
+                </x-dropdown>               
             </div>
         </div>
 
-        <div class="artwork-grid">
-            <!-- Artwork Item 1 -->
-            <div class="artwork-item">
-                <img src="gambar/Container.svg" alt="Wayang Kulit" class="artwork-image">
-                <div class="artwork-info">
-                    <div class="artwork-location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Terminal 1 Departure
+        @if ($artworks->isEmpty())
+        <p class="text-center justify-center text-gray-500 py-4">
+            No artworks found matching the selected filters.
+        </p>
+        @else
+            <div class="artwork-grid">
+                <!-- Artwork Item 1 -->
+                @foreach ($artworks as $artwork)
+                <div class="artwork-item">
+                    <img src="{{ url('storage/' . $artwork->foto) }}" alt="foto" class="artwork-image">
+                    <div class="artwork-info">
+                        <div class="artwork-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ $artwork->location }}
+                        </div>
+                        <h3 class="artwork-name">{{ $artwork->nama }}</h3>
+                        <p class="artwork-description" data-en="{{ $artwork->deskripsi_en }}" data-id="{{ $artwork->deskripsi }}"></p>
                     </div>
-                    <h3 class="artwork-name">Wayang Kulit Installation</h3>
-                    <p class="artwork-description">A stunning display of traditional Javanese shadow puppets, showcasing the rich cultural heritage of Yogyakarta. The installation features intricate puppet designs illuminated by modern lighting.</p>
                 </div>
+                @endforeach
             </div>
-
-            <!-- Artwork Item 2 -->
-            <div class="artwork-item">
-                <img src="/api/placeholder/400/320" alt="Batik Wall" class="artwork-image">
-                <div class="artwork-info">
-                    <div class="artwork-location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Terminal 2 Main Hall
-                    </div>
-                    <h3 class="artwork-name">Contemporary Batik Wall</h3>
-                    <p class="artwork-description">A modern interpretation of traditional batik patterns created using mixed media. This large-scale installation combines classic motifs with contemporary artistic expressions.</p>
-                </div>
-            </div>
-
-            <!-- Artwork Item 3 -->
-            <div class="artwork-item">
-                <img src="/api/placeholder/400/320" alt="Borobudur" class="artwork-image">
-                <div class="artwork-info">
-                    <div class="artwork-location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Arrival Hall
-                    </div>
-                    <h3 class="artwork-name">Borobudur Relief</h3>
-                    <p class="artwork-description">A miniature recreation of the famous Borobudur temple reliefs, carved in modern materials. This piece tells the story of ancient Buddhist narratives in a contemporary setting.</p>
-                </div>
-            </div>
-
-            <!-- Artwork Item 4 -->
-            <div class="artwork-item">
-                <img src="/api/placeholder/400/320" alt="Garden Sculpture" class="artwork-image">
-                <div class="artwork-info">
-                    <div class="artwork-location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Airport Garden
-                    </div>
-                    <h3 class="artwork-name">Harmony in Motion</h3>
-                    <p class="artwork-description">A kinetic sculpture that moves with the wind, representing the harmony between nature and modern aviation. Created from sustainable materials with traditional Javanese motifs.</p>
-                </div>
-            </div>
-        </div>
+        @endif
     </div>
+    <script>
+        // Language Switch Functionality
+        document.addEventListener("DOMContentLoaded", function() {
+            let savedLang = localStorage.getItem("selectedLanguage") || "en"; // Default ke 'en'
+            applyLanguage(savedLang);
+        });
+
+        document.getElementById('idBtn').addEventListener('click', function() {
+            setLanguage('id');
+        });
+
+        document.getElementById('enBtn').addEventListener('click', function() {
+            setLanguage('en');
+        });
+
+        function setLanguage(lang) {
+            localStorage.setItem("selectedLanguage", lang); // Simpan ke LocalStorage
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            // Terapkan teks sesuai bahasa
+            document.querySelectorAll('[data-en], [data-id]').forEach(element => {
+                element.textContent = element.getAttribute(`data-${lang}`);
+            });
+
+            // Update tombol aktif
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${lang}Btn`).classList.add('active');
+        }
+
+        // Cegah flash default 'en' saat reload (terapkan sebelum halaman selesai load)
+        let savedLang = localStorage.getItem("selectedLanguage") || "en";
+        applyLanguage(savedLang);
+    </script>
 </body>
 </html>

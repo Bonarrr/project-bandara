@@ -12,16 +12,12 @@ class Tenant extends Model
     protected $fillable = [
         'status',
         'kategori',
-        'tipe',
         'nama',
         'location',
+        'deskripsi',
+        'deskripsi_en',
         'foto',
-        'jadwal',
         'jam_buka',
         'jam_tutup',
-    ];
-
-    protected $casts = [
-        'jadwal' => 'array',
     ];
 }

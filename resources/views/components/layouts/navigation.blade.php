@@ -18,25 +18,25 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.index')">
+                    <x-nav-link :href="route('admin.tenants.index')" :active="request()->routeIs('tenants.index')">
                         {{ __('Tenants') }}
                     </x-nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('artworks.index')" :active="request()->routeIs('artworks.index')">
+                    <x-nav-link :href="route('admin.artworks.index')" :active="request()->routeIs('artworks.index')">
                         {{ __('Artworks') }}
                     </x-nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('hotels.index')" :active="request()->routeIs('hotels.index')">
+                    <x-nav-link :href="route('admin.hotels.index')" :active="request()->routeIs('hotels.index')">
                         {{ __('Hotels') }}
                     </x-nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('destinations.index')" :active="request()->routeIs('destinations.index')">
+                    <x-nav-link :href="route('admin.destinations.index')" :active="request()->routeIs('destinations.index')">
                         {{ __('Destinations') }}
                     </x-nav-link>
                 </div>
@@ -95,19 +95,19 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
             
-            <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.index')">
+            <x-responsive-nav-link :href="route('admin.tenants.index')" :active="request()->routeIs('tenants.index')">
                 {{ __('Tenants') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('artworks.index')" :active="request()->routeIs('artworks.index')">
+            <x-responsive-nav-link :href="route('admin.artworks.index')" :active="request()->routeIs('artworks.index')">
                 {{ __('Artworks') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('hotels.index')" :active="request()->routeIs('hotels.index')">
+            <x-responsive-nav-link :href="route('admin.hotels.index')" :active="request()->routeIs('hotels.index')">
                 {{ __('Hotels') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('destinations.index')" :active="request()->routeIs('destinations.index')">
+            <x-responsive-nav-link :href="route('admin.destinations.index')" :active="request()->routeIs('destinations.index')">
                 {{ __('Destinations') }}
             </x-responsive-nav-link>
         </div>

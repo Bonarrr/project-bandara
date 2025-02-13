@@ -8,16 +8,102 @@ use Illuminate\Support\Facades\Storage;
 
 class HotelController extends Controller
 {
-    public function index()
+    public function userIndex(Request $request)
     {
-        $hotels = Hotel::paginate(12);
+        $jarak = $request->input('jarak'); 
+        $harga = $request->input('harga');
+    
+        $query = Hotel::query();
 
-        return view('hotels.index', compact('hotels'));
+        if ($jarak = request('jarak')) {
+            if ($jarak === '15+') {
+                $query->where('jarak', '>', 15);
+            } else {
+                [$min, $max] = explode('-', $jarak);
+                $query->whereBetween('jarak', [(float) $min, (float) $max]);
+            }
+        }
+
+        if ($harga = request('harga')) {
+            if ($harga === '<500000') {
+                $query->where('harga', '<', 500000);
+            } else if ($harga === '>1000000'){
+                $query->where('harga', '>', 1000000);
+            }else{
+                [$min, $max] = explode('-', $harga);
+                $query->whereBetween('harga', [(float) $min, (float) $max]);
+            }
+        }
+
+        $hotels = $query->paginate(10);
+
+        $allDistance = [
+            '0-5' => '0-5 km',
+            '5-10' => '5-10 km',
+            '10-15' => '10-15 km',
+        ];
+        
+        $allPrice = [
+            '<500000' => 'Budget (< 500k)',
+            '500000-1000000' => 'Mid Range (500k - 1M)',
+            '>1000000' => 'Luxury (>1M)',
+        ];
+    
+        return view('welcome.information.hotel', compact('hotels', 'jarak', 'harga', 'allDistance','allPrice'));
+    }
+
+    public function index(Request $request)
+    {
+        $jarak = $request->input('jarak'); 
+        $harga = $request->input('harga'); 
+        $search = $request->input('search'); 
+    
+        $query = Hotel::query();
+
+        if ($jarak = request('jarak')) {
+            if ($jarak === '15+') {
+                $query->where('jarak', '>', 15);
+            } else {
+                [$min, $max] = explode('-', $jarak);
+                $query->whereBetween('jarak', [(float) $min, (float) $max]);
+            }
+        }
+
+        if ($harga = request('harga')) {
+            if ($harga === '<500000') {
+                $query->where('harga', '<', 500000);
+            } else if ($harga === '>1000000'){
+                $query->where('harga', '>', 1000000);
+            }else{
+                [$min, $max] = explode('-', $harga);
+                $query->whereBetween('harga', [(float) $min, (float) $max]);
+            }
+        }
+
+        if ($search) {
+            $query->where('nama', 'like', '%' . $search . '%');
+        }
+
+        $hotels = $query->paginate(10);
+
+        $allDistance = [
+            '0-5' => '0-5 km',
+            '5-10' => '5-10 km',
+            '10-15' => '10-15 km',
+        ];
+        
+        $allPrice = [
+            '<500000' => 'Budget (< 500k)',
+            '500000-1000000' => 'Mid Range (500k - 1M)',
+            '>1000000' => 'Luxury (>1M)',
+        ];
+    
+        return view('admin.hotels.index', compact('hotels', 'jarak', 'harga', 'search', 'allDistance','allPrice'));
     }
 
     public function create()
     {
-        return view('hotels.create');
+        return view('admin.hotels.create');
     }
 
     public function store(Request $request)
@@ -26,28 +112,28 @@ class HotelController extends Controller
         $foto->storeAs('public', $foto->hashName());
 
         Hotel::create([
-            'tipe' => $request->tipe,
+            'jarak' => $request->jarak,
             'nama' => $request->nama,
             'harga' => str_replace(".", "", $request->harga),
-            'location' => $request->location,
+            'alamat' => $request->alamat,
             'foto' => $foto->hashName(),
         ]);
 
-        return redirect()->route('hotels.index')->with('success', 'Add hotel Success');
+        return redirect()->route('admin.hotels.index')->with('success', 'Add hotel Success');
     }
 
     public function edit(Hotel $hotel)
     {
-        return view('hotels.edit', compact('hotel'));
+        return view('admin.hotels.edit', compact('hotel'));
     }
 
     public function update(Request $request, Hotel $hotel)
     {
 
-        $hotel->tipe = $request->tipe;
+        $hotel->jarak = $request->jarak;
         $hotel->nama = $request->nama;
         $hotel->harga = str_replace(".", "", $request->harga);
-        $hotel->location = $request->location;
+        $hotel->alamat = $request->alamat;
 
         if ($request->file('foto')) {
 
@@ -61,7 +147,7 @@ class HotelController extends Controller
 
         $hotel->update();
 
-        return redirect()->route('hotels.index')->with('success', 'Update hotel Success');
+        return redirect()->route('admin.hotels.index')->with('success', 'Update hotel Success');
     }
 
     public function destroy(Hotel $hotel)
@@ -72,6 +158,6 @@ class HotelController extends Controller
 
         $hotel->delete();
 
-        return redirect()->route('hotels.index')->with('success', 'Delete hotel Success');
+        return redirect()->route('admin.hotels.index')->with('success', 'Delete hotel Success');
     }
 }

@@ -8,16 +8,59 @@ use Illuminate\Support\Facades\Storage;
 
 class ArtworkController extends Controller
 {
-    public function index()
+    public function userIndex(Request $request)
     {
-        $artworks = Artwork::paginate(12);
+        $location = $request->input('location'); 
+        $search = $request->input('search'); 
+    
+        $query = Artwork::query();
 
-        return view('artworks.index', compact('artworks'));
+        if ($location) {
+            $query->where('location', $location);
+        }
+
+        if ($search) {
+            $query->where('nama', 'like', '%' . $search . '%');
+        }
+
+        $artworks = $query->paginate(10);
+
+        $allLocation = [
+            'Terminal 1',
+            'Terminal 2',
+            'Departure Hall',
+            'Arrival Hall',
+            'Airport Garden'
+        ];
+    
+        return view('welcome.information.artwork', compact('artworks', 'location', 'search', 'allLocation'));
+    }
+
+    public function index(Request $request)
+    {
+        $location = $request->input('location');
+        $search = $request->input('search'); 
+    
+        $query = Artwork::query();
+
+        if ($location) {
+            $query->where('location', $location);
+        }
+
+        if ($search) {
+            $query->where('nama', 'like', '%' . $search . '%');
+        }
+
+        $artworks = $query->paginate(10);
+
+        $allLocation = artwork::select('location')->distinct()->pluck('location');
+    
+        return view('admin.artworks.index', compact('artworks', 'location', 'search', 'allLocation'));
     }
 
     public function create()
     {
-        return view('artworks.create');
+        return view('admin.artworks.create');
     }
 
     public function store(Request $request)
@@ -28,28 +71,28 @@ class ArtworkController extends Controller
 
         Artwork::create([
             
-            'tipe' => $request->tipe,
             'nama' => $request->nama,
             'location' => $request->location,
             'deskripsi' => $request->deskripsi,
+            'deskripsi_en' => $request->deskripsi_en,
             'foto' => $foto->hashName(),
         ]);
 
-        return redirect()->route('artworks.index')->with('success', 'Add artwork Success');
+        return redirect()->route('admin.artworks.index')->with('success', 'Add artwork Success');
     }
 
     public function edit(Artwork $artwork)
     {
-        return view('artworks.edit', compact('artwork'));
+        return view('admin.artworks.edit', compact('artwork'));
     }
 
     public function update(Request $request, Artwork $artwork)
     {
 
-        $artwork->tipe = $request->tipe;
         $artwork->nama = $request->nama;
         $artwork->location = $request->location;
         $artwork->deskripsi = $request->deskripsi;
+        $artwork->deskripsi_en = $request->deskripsi_en;
 
         if ($request->file('foto')) {
 
@@ -63,7 +106,7 @@ class ArtworkController extends Controller
 
         $artwork->update();
 
-        return redirect()->route('artworks.index')->with('success', 'Update artwork Success');
+        return redirect()->route('admin.artworks.index')->with('success', 'Update artwork Success');
     }
 
     public function destroy(Artwork $artwork)
@@ -74,6 +117,6 @@ class ArtworkController extends Controller
 
         $artwork->delete();
 
-        return redirect()->route('artworks.index')->with('success', 'Delete artwork Success');
+        return redirect()->route('admin.artworks.index')->with('success', 'Delete artwork Success');
     }
 }

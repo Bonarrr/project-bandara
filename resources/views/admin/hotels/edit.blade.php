@@ -3,7 +3,7 @@
 
         <div class="flex mt-6 justify-between items-center">
             <h2 class="font-semibold text-xl">Edit hotel</h2>
-            @include('hotels.partials.delete-hotel', ['hotel' => $hotel])
+            @include('admin.hotels.partials.delete-hotel', ['hotel' => $hotel])
         </div>
 
         <div class="mt-4" x-data="{ imageUrl: '/storage/{{ $hotel->foto }}' }">
@@ -25,12 +25,10 @@
                     </div>
 
                     <div class="mt-4">
-                        <x-input-label for="tipe" :value="__('Tipe')" />
-                        <select id="tipe" name="tipe" class="block mt-1 w-full border p-2" required>
-                            <option value="" disabled {{ old('tipe') ? '' : 'selected' }}>Pilih tipe</option>
-                            <option value="Fast Food" {{ old('tipe') == 'Fast Food' ? 'selected' : '' }}>Fast Food</option>
-                        </select>
-                        <x-input-error :messages="$errors->get('tipe')" class="mt-2" />
+                        <x-input-label for="jarak" :value="__('Jarak')" />
+                        <x-text-input id="jarak" class="block mt-1 w-full" type="number" name="jarak"
+                            :value="$hotel->jarak" step="0.01" required />
+                        <x-input-error :messages="$errors->get('jarak')" class="mt-2" />
                     </div>
 
                     <div class="mt-4">
@@ -42,17 +40,17 @@
 
                     <div class="mt-4">
                         <x-input-label for="harga" :value="__('Harga')" />
-                        <x-text-input id="harga" class="block mt-1 w-full" type="text" name="harga"
-                            :value="$hotel->harga" x-mask:dynamic="$money($input, ',')" required />
+                        <x-text-input id="harga" class="block mt-1 w-full" type="number" name="harga"
+                            :value="$hotel->harga" x-mask:dynamic="$money($input, '.,')" required />
                         <x-input-error :messages="$errors->get('harga')" class="mt-2" />
                     </div>
 
                     <div class="mt-4">
-                        <x-input-label for="location" :value="__('Location')" />
-                        <x-text-input id="location" class="block mt-1 w-full" type="text" name="location"
-                            :value="$hotel->location" required />
-                        <x-input-error :messages="$errors->get('location')" class="mt-2" />
-                    </div>
+                        <x-input-label for="alamat" :value="__('Alamat')" />
+                        <x-text-area id="alamat" class="block mt-1 w-full" type="text"
+                            name="alamat">{{ $hotel->alamat }}</x-text-area>
+                        <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+                    </div>  
 
                     <x-primary-button class="justify-center w-full mt-4">
                         {{ __('Submit') }}

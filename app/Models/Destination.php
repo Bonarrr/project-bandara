@@ -10,10 +10,14 @@ class Destination extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tipe',
         'nama',
-        'location',
         'deskripsi',
+        'deskripsi_en',
+        'tipe',
         'foto',
+    ];
+
+    protected $casts = [
+        'tipe' => 'array',
     ];
 }

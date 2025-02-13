@@ -10,10 +10,10 @@ class Artwork extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tipe',
         'nama',
         'location',
         'deskripsi',
+        'deskripsi_en',
         'foto',
     ];
 }

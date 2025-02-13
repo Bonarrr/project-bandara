@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('destinations', function (Blueprint $table) {
             $table->id();
-            $table->string('tipe');
             $table->string('nama');
-            $table->string('location');
-            $table->string('deskripsi')->nullable();
+            $table->string('deskripsi');
+            $table->string('deskripsi_en');
+            $table->json('tipe');
             $table->string('foto')->default('noimage.png');
             $table->timestamps();
         });

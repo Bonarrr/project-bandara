@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('status');
             $table->string('kategori');
-            $table->string('tipe')->nullable();
             $table->string('nama');
             $table->string('location');
+            $table->string('deskripsi');
+            $table->string('deskripsi_en');
             $table->string('foto')->default('noimage.png');
-            $table->json('jadwal');
             $table->time('jam_buka');
             $table->time('jam_tutup');
             $table->timestamps();

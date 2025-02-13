@@ -8,16 +8,32 @@ use Illuminate\Support\Facades\Storage;
 
 class DestinationController extends Controller
 {
-    public function index()
-    {
-        $destinations = Destination::paginate(12);
 
-        return view('destinations.index', compact('destinations'));
+    public function userIndex()
+    {
+        $destinations = Destination::paginate(10);
+
+        return view('welcome.information.todo', compact('destinations'));
+    }
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = Destination::query();
+
+        if ($search) {
+            $query->where('nama', 'like', '%' . $search . '%');
+        }
+
+        $destinations = $query->paginate(10);
+
+        return view('admin.destinations.index', compact('destinations', 'search'));
     }
 
     public function create()
     {
-        return view('destinations.create');
+        return view('admin.destinations.create');
     }
 
     public function store(Request $request)
@@ -28,28 +44,28 @@ class DestinationController extends Controller
 
         Destination::create([
             
-            'tipe' => $request->tipe,
             'nama' => $request->nama,
-            'location' => $request->location,
             'deskripsi' => $request->deskripsi,
+            'deskripsi_en' => $request->deskripsi_en,
+            'tipe' => $request->tipe,
             'foto' => $foto->hashName(),
         ]);
 
-        return redirect()->route('destinations.index')->with('success', 'Add destination Success');
+        return redirect()->route('admin.destinations.index')->with('success', 'Add destination Success');
     }
 
     public function edit(Destination $destination)
     {
-        return view('destinations.edit', compact('destination'));
+        return view('admin.destinations.edit', compact('destination'));
     }
 
     public function update(Request $request, Destination $destination)
     {
 
-        $destination->tipe = $request->tipe;
         $destination->nama = $request->nama;
-        $destination->location = $request->location;
         $destination->deskripsi = $request->deskripsi;
+        $destination->deskripsi_en = $request->deskripsi_en;
+        $destination->tipe = $request->tipe;
 
         if ($request->file('foto')) {
 
@@ -63,7 +79,7 @@ class DestinationController extends Controller
 
         $destination->update();
 
-        return redirect()->route('destinations.index')->with('success', 'Update destination Success');
+        return redirect()->route('admin.destinations.index')->with('success', 'Update destination Success');
     }
 
     public function destroy(Destination $destination)
@@ -74,6 +90,6 @@ class DestinationController extends Controller
 
         $destination->delete();
 
-        return redirect()->route('destinations.index')->with('success', 'Delete destination Success');
+        return redirect()->route('admin.destinations.index')->with('success', 'Delete destination Success');
     }
 }

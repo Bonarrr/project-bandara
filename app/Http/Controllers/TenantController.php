@@ -10,14 +10,14 @@ class TenantController extends Controller
 {
     public function userIndex(Request $request)
     {
-        $status = $request->input('status'); 
+        $location = $request->input('location'); 
         $kategori = $request->input('kategori'); 
         $search = $request->input('search'); 
     
         $query = Tenant::query();
 
-        if ($status) {
-            $query->where('status', $status);
+        if ($location) {
+            $query->where('location', $location);
         }
 
         if ($kategori) {
@@ -25,14 +25,30 @@ class TenantController extends Controller
         }
 
         if ($search) {
-            $query->where('nama', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%')
+                  ->orWhere('deskripsi', 'like', '%' . $search . '%')
+                  ->orWhere('deskripsi_en', 'like', '%' . $search . '%');
+            });
         }
 
         $tenants = $query->paginate(10);
 
-        $allCategories = tenant::select('kategori')->distinct()->pluck('kategori');
+        $allCategories = [
+            'Food & Beverage',
+            'Retail',
+            'Services',
+            'Duty Free'
+        ];
+
+        $allLocation = [
+            'Terminal 1',
+            'Terminal 2',
+            'Domestic Area',
+            'International Area'
+        ];
     
-        return view('welcome.tenant', compact('tenants', 'status', 'kategori', 'search', 'allCategories'));
+        return view('welcome.tenant', compact('tenants', 'location', 'kategori', 'search', 'allCategories','allLocation'));
     }
     
     public function index(Request $request)
@@ -52,7 +68,11 @@ class TenantController extends Controller
         }
 
         if ($search) {
-            $query->where('nama', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%')
+                  ->orWhere('deskripsi', 'like', '%' . $search . '%')
+                  ->orWhere('deskripsi_en', 'like', '%' . $search . '%');
+            });
         }
 
         $tenants = $query->paginate(10);
@@ -77,11 +97,11 @@ class TenantController extends Controller
             
             'status' => $request->status,
             'kategori' => $request->kategori,
-            'tipe' => $request->tipe,
             'nama' => $request->nama,
             'location' => $request->location,
+            'deskripsi' => $request->deskripsi,
+            'deskripsi_en' => $request->deskripsi_en,
             'foto' => $foto->hashName(),
-            'jadwal' => $request->jadwal,
             'jam_buka' => $request->jam_buka,
             'jam_tutup' => $request->jam_tutup
         ]);
@@ -99,10 +119,10 @@ class TenantController extends Controller
 
         $tenant->status = $request->status;
         $tenant->kategori = $request->kategori;
-        $tenant->tipe = $request->tipe;
         $tenant->nama = $request->nama;
         $tenant->location = $request->location;
-        $tenant->jadwal = $request->jadwal;
+        $tenant->deskripsi = $request->deskripsi;
+        $tenant->deskripsi_en = $request->deskripsi_en;
         $tenant->jam_buka = $request->jam_buka;
         $tenant->jam_tutup = $request->jam_tutup;
 

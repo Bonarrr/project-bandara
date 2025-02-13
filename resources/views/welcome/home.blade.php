@@ -23,6 +23,7 @@
 
         body {
             padding: 1rem;
+            overflow: hidden;
         }
 
         header {
@@ -103,16 +104,31 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: 55vh 27vh;
+            grid-template-rows: 53vh 25vh;
             gap: 1rem;
             height: 90%;
         }
 
         .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+            overflow: hidden;
+        }
+
+        .flight-card {
+           
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             border: 1px solid rgba(255,255,255,0.3);
@@ -213,10 +229,10 @@
             <div id="day-date"></div>
         </div>
         <div class="center">
-            <img src="gambar/MpuklX20190503080722 1.png" alt="Logo" class="logo">
+            <img src="storage/logo_yia.png" alt="Logo" class="logo">
         </div>
         <div class="right">
-            <img src="gambar/image 9.png" alt="Logo" class="logo">
+            <img src="storage/logo_injourney.png" alt="Logo" class="logo">
             <div class="language-switch">
                 <button class="lang-btn" id="idBtn">ID</button>
                 <button class="lang-btn active" id="enBtn">EN</button>
@@ -224,10 +240,10 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container" >
         <div class="grid">
             <!-- Baris Pertama -->
-            <div class="card main-card">
+            <div class="flight-card main-card">
                 <i class="icon fas fa-plane-departure"></i>
                 <h2 data-en="Flight Information" data-id="Informasi Penerbangan">Flight Information</h2>
                 <p data-en="Real-time flight updates from Yogyakarta International Airport" 
@@ -237,23 +253,19 @@
                 
                 <table class="flight-table">
                     <tr>
-                        <th data-en="Flight" data-id="Penerbangan">Flight</th>
-                        <th data-en="Route" data-id="Rute">Route</th>
-                        <th data-en="Time" data-id="Waktu">Time</th>
+                        <th data-en="Flight No" data-id="No Penerbangan">Flight No</th>
+                        <th data-en="Destination" data-id="Tujuan">Destination</th>
+                        <th data-en="Schedule" data-id="Jadwal">Schedule</th>
                         <th data-en="Status" data-id="Status">Status</th>
                     </tr>
-                    <tr>
-                        <td>GA-318</td>
-                        <td>JKT ➔ DPS</td>
-                        <td>15:30</td>
-                        <td data-en="On Time" data-id="Tepat Waktu">On Time</td>
-                    </tr>
-                    <tr>
-                        <td>QG-145</td>
-                        <td>JKT ➔ SUB</td>
-                        <td>16:15</td>
-                        <td data-en="Delayed" data-id="Terlambat">Delayed</td>
-                    </tr>
+                    @foreach ($nearestFlights as $flight)
+                        <tr>
+                            <td>{{ $flight['flightno'] }}</td>
+                            <td>{{ $flight['fromto'] }}</td>
+                            <td>{{ \Carbon\Carbon::parse($flight['schedule'])->format('H:i') }}</td>
+                            <td>{{ $flight['flightstat'] }}</td>
+                        </tr>
+                    @endforeach
                 </table>
                 <a href="{{ route('welcome.flight') }}" class="btn">
                     <span data-en="View All Flights" data-id="Lihat Semua Penerbangan">View All Flights</span>
@@ -263,25 +275,25 @@
 
             <div class="side-container">
                 <div class="card">
-                    <i class="icon fas fa-map-marked-alt"></i>
-                    <h2 data-en="Interactive Map" data-id="Peta Interaktif">Interactive Map</h2>
-                    <p data-en="Explore airport facilities and navigation" 
+                    <i class="icon fas fa-map-marked-alt" style="margin: 0"></i>
+                    <h2 data-en="Interactive Map" data-id="Peta Interaktif" style="margin: 0">Interactive Map</h2>
+                    <p data-en="Explore airport facilities and navigation" style="margin: 0" 
                        data-id="Jelajahi fasilitas dan navigasi bandara">
                         Explore airport facilities and navigation
                     </p>
-                    <a href="#" class="btn">
+                    <a href="#" style="all: unset; cursor:pointer; color:var(--primary)">
                         <span data-en="Open Map" data-id="Buka Peta">Open Map</span>
                     </a>
                 </div>
                 
                 <div class="card">
-                    <i class="icon fas fa-store"></i>
-                    <h2 data-en="Tenant Directory" data-id="Direktori Tenant">Tenant Directory</h2>
-                    <p data-en="Discover shops and services available" 
+                    <i class="icon fas fa-store" style="margin: 0"></i>
+                    <h2 data-en="Tenant Directory" data-id="Direktori Tenant" style="margin: 0">Tenant Directory</h2>
+                    <p data-en="Discover shops and services available" style="margin: 0" 
                        data-id="Temukan toko dan layanan yang tersedia">
                         Discover shops and services available
                     </p>
-                    <a href="{{ route('welcome.tenant') }}" class="btn">
+                    <a href="{{ route('welcome.tenant') }}" style="all: unset; cursor:pointer; color:var(--primary)">
                         <span data-en="Browse Tenants" data-id="Lihat Tenant">Browse Tenants</span>
                     </a>
                 </div>
@@ -290,37 +302,37 @@
             <!-- Baris Kedua -->
             <div class="bottom-row">
                 <div class="card">
-                    <i class="icon fas fa-info-circle"></i>
-                    <h2 data-en="Information" data-id="Informasi">Information</h2>
-                    <p data-en="Essential travel guidelines and regulations" 
+                    <i class="icon fas fa-info-circle" style="margin:0px"></i>
+                    <h2 data-en="Information" data-id="Informasi" style="margin:0px">Information</h2>
+                    <p data-en="Essential travel guidelines and regulations" style="margin:0px"
                        data-id="Panduan dan peraturan perjalanan penting">
                         Essential travel guidelines and regulations
                     </p>
-                    <a href="{{ route('welcome.information.index') }}" class="btn">
+                    <a href="{{ route('welcome.information.index') }}" style="all: unset; cursor:pointer; color:var(--primary)"> 
                         <span data-en="Learn More" data-id="Selengkapnya">Learn More</span>
                     </a>
                 </div>
 
                 <div class="card">
-                    <i class="icon fas fa-headset"></i>
-                    <h2 data-en="Customer Service" data-id="Layanan Pelanggan">Customer Service</h2>
-                    <p data-en="24/7 support for your travel needs" 
+                    <i class="icon fas fa-headset" style="margin: 0"></i>
+                    <h2 data-en="Customer Service" data-id="Layanan Pelanggan" style="margin: 0">Customer Service</h2>
+                    <p data-en="24/7 support for your travel needs" style="margin: 0" 
                        data-id="Dukungan 24/7 untuk kebutuhan perjalanan Anda">
                         24/7 support for your travel needs
                     </p>
-                    <a href="{{ route('welcome.customerservice') }}" class="btn">
+                    <a href="{{ route('welcome.customerservice') }}" style="all: unset; cursor:pointer; color:var(--primary)">
                         <span data-en="Contact Us" data-id="Hubungi Kami">Contact Us</span>
                     </a>
                 </div>
 
                 <div class="card">
-                    <i class="icon fas fa-comment-dots"></i>
-                    <h2 data-en="Customer Feedback" data-id="Umpan Balik">Customer Feedback</h2>
-                    <p data-en="Share your airport experience with us" 
+                    <i class="icon fas fa-comment-dots" style="margin: 0"></i>
+                    <h2 data-en="Customer Feedback" data-id="Umpan Balik" style="margin: 0">Customer Feedback</h2>
+                    <p data-en="Share your airport experience with us" style="margin: 0" 
                        data-id="Bagikan pengalaman bandara Anda dengan kami">
                         Share your airport experience with us
                     </p>
-                    <a href="#" class="btn">
+                    <a href="#" style="all: unset; cursor:pointer; color:var(--primary)">
                         <span data-en="Give Feedback" data-id="Beri Umpan Balik">Give Feedback</span>
                     </a>
                 </div>
@@ -329,27 +341,47 @@
     </div>
 
     <script>
+        function checkAndRefresh() {
+            const now = new Date();
+            if (now.getSeconds() === 0) {
+                location.reload(); // Refresh hanya saat detik = 00
+            }
+        }
+
         // Language Switch Functionality
+        document.addEventListener("DOMContentLoaded", function() {
+            let savedLang = localStorage.getItem("selectedLanguage") || "en"; // Default ke 'en'
+            applyLanguage(savedLang);
+        });
+
         document.getElementById('idBtn').addEventListener('click', function() {
-            switchLanguage('id');
-            updateTime(); // Update time display with Indonesian
+            setLanguage('id');
         });
 
         document.getElementById('enBtn').addEventListener('click', function() {
-            switchLanguage('en');
-            updateTime(); // Update time display with English
+            setLanguage('en');
         });
 
-        function switchLanguage(lang) {
-            // Update button active state
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`${lang}Btn`).classList.add('active');
-            
-            // Update all translatable elements
+        function setLanguage(lang) {
+            localStorage.setItem("selectedLanguage", lang); // Simpan ke LocalStorage
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            // Terapkan teks sesuai bahasa
             document.querySelectorAll('[data-en], [data-id]').forEach(element => {
                 element.textContent = element.getAttribute(`data-${lang}`);
             });
+
+            // Update tombol aktif
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${lang}Btn`).classList.add('active');
         }
+
+        // Cegah flash default 'en' saat reload (terapkan sebelum halaman selesai load)
+        let savedLang = localStorage.getItem("selectedLanguage") || "en";
+        applyLanguage(savedLang);
+
 
         // Time and Date Display
         function updateTime() {
@@ -391,7 +423,7 @@
         }
 
         // Initial setup
-        switchLanguage('en');
+        setInterval(checkAndRefresh, 1000);
         setInterval(updateTime, 1000);
         updateTime();
     </script>

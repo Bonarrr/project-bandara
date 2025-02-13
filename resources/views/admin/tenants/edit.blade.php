@@ -40,21 +40,12 @@
                         <x-input-label for="kategori" :value="__('Kategori')" />
                         <select id="kategori" name="kategori" class="block mt-1 w-full border p-2" required>
                             <option value="" disabled {{ !$tenant->kategori ? 'selected' : '' }}>Pilih kategori</option>
-                            <option value="Teknologi" {{ $tenant->kategori === 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
-                            <option value="Bisnis" {{ $tenant->kategori === 'Bisnis' ? 'selected' : '' }}>Bisnis</option>
-                            <option value="Pendidikan" {{ $tenant->kategori === 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                            <option value="Food & Beverage" {{ $tenant->kategori === 'Food & Beverage' ? 'selected' : '' }}>Food & Beverage</option>
+                            <option value="Retail" {{ $tenant->kategori === 'Retail' ? 'selected' : '' }}>Retail</option>
+                            <option value="Services" {{ $tenant->kategori === 'Services' ? 'selected' : '' }}>Services</option>
+                            <option value="Duty Free" {{ $tenant->kategori === 'Duty Free' ? 'selected' : '' }}>Duty Free</option>
                         </select>
                         <x-input-error :messages="$errors->get('kategori')" class="mt-2" />
-                    </div>
-
-                    <!-- Tipe -->
-                    <div class="mt-4">
-                        <x-input-label for="tipe" :value="__('Tipe')" />
-                        <select id="tipe" name="tipe" class="block mt-1 w-full border p-2">
-                            <option value="" disabled {{ !$tenant->tipe ? 'selected' : '' }}>Pilih tipe</option>
-                            <option value="Fast Food" {{ $tenant->tipe === 'Fast Food' ? 'selected' : '' }}>Fast Food</option>
-                        </select>
-                        <x-input-error :messages="$errors->get('tipe')" class="mt-2" />
                     </div>
 
                     <!-- Nama -->
@@ -68,27 +59,62 @@
                     <!-- Location -->
                     <div class="mt-4">
                         <x-input-label for="location" :value="__('Location')" />
-                        <x-text-input id="location" class="block mt-1 w-full" type="text" name="location"
-                            value="{{ $tenant->location }}" required />
+                        <select id="location" name="location" class="block mt-1 w-full border p-2" required>
+                            <option value="" disabled {{ old('location') ? '' : 'selected' }}>Pilih lokasi</option>
+                            <option value="Terminal 1" {{ $tenant->location == 'Terminal 1' ? 'selected' : '' }}>Terminal 1</option>
+                            <option value="Terminal 2" {{ $tenant->location == 'Terminal 2' ? 'selected' : '' }}>Terminal 2</option>
+                            <option value="Domestic Area" {{ $tenant->location == 'Domestic Area' ? 'selected' : '' }}>Domestic Area</option>
+                            <option value="International Area" {{ $tenant->location == 'International Area' ? 'selected' : '' }}>International Area</option>
+                        </select>
                         <x-input-error :messages="$errors->get('location')" class="mt-2" />
+                    </div>
+
+                    <!-- Deskipsi -->
+                    <div class="mt-4">
+                        <x-input-label for="deskripsi" :value="__('Deskripsi Id')" />
+                        <x-text-area id="deskripsi" class="block mt-1 w-full" type="text"
+                            name="deskripsi">{{ $tenant->deskripsi }}</x-text-area>
+                        <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
+                    </div>
+
+                    <div class="mt-4">
+                        <x-input-label for="deskripsi_en" :value="__('Deskripsi En')" />
+                        <x-text-area id="deskripsi_en" class="block mt-1 w-full" type="text"
+                            name="deskripsi_en">{{ $tenant->deskripsi_en }}</x-text-area>
+                        <x-input-error :messages="$errors->get('deskripsi_en')" class="mt-2" />
                     </div>
 
                     <!-- Jadwal -->
                     <div class="mt-4">
-                        <x-schedule-checkbox 
-                        name="jadwal" 
-                        label="Pilih Jadwal" 
-                        :days="[ 
-                            'monday' => 'Senin', 
-                            'tuesday' => 'Selasa', 
-                            'wednesday' => 'Rabu', 
-                            'thursday' => 'Kamis', 
-                            'friday' => 'Jumat', 
-                            'saturday' => 'Sabtu', 
-                            'sunday' => 'Minggu' 
-                        ]" 
-                        :checked="old('jadwal', $tenant->jadwal ?? [])"
-                    />                    
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <x-input-label for="jam_buka" :value="__('Jam Buka')" />
+                                <input 
+                                    type="time" 
+                                    id="jam_buka" 
+                                    name="jam_buka" 
+                                    class="form-input mt-1 block w-full"
+                                    value="{{ $tenant->jam_buka }}"
+                                />
+                                @error('jam_buka')
+                                    <div class="text-sm text-red-600 mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            
+                            <div>
+                                <x-input-label for="jam_tutup" :value="__('Jam Tutup')"/>
+                                <input 
+                                    type="time" 
+                                    id="jam_tutup" 
+                                    name="jam_tutup" 
+                                    class="form-input mt-1 block w-full"
+                                    value="{{ $tenant->jam_tutup }}"
+                                />
+                                @error('jam_tutup')
+                                    <div class="text-sm text-red-600 mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Submit Button -->

@@ -6,6 +6,7 @@
     <title>YIA Hotels</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --primary: #4361ee;
@@ -32,25 +33,67 @@
             padding: 20px;
         }
 
+        header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            padding: 15px 20px;
+            gap: 10px;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            margin-bottom: 12px;
+            background-color: white;
+            border-radius: 15px;
+        }
+
         .back-button {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 0.8rem 1.5rem;
-            background: white;
-            border: none;
-            border-radius: 10px;
             color: var(--primary);
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 1.5rem;
             text-decoration: none;
         }
 
-        .back-button:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .right {
+            grid-column: 3;
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-switch {
+            display: flex;
+            gap: 5px;
+            background: rgba(255,255,255,0.9);
+            padding: 5px;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .lang-btn {
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .info-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
         }
 
         .filter-card {
@@ -61,6 +104,9 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: visible;
+            z-index: 30;
         }
 
         .filter-section {
@@ -80,11 +126,29 @@
             cursor: pointer;
         }
 
+        [x-dropdown] {
+            position: relative;
+            z-index: 50;
+        }
+
+        [x-dropdown] [x-slot="content"] {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 100;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 10px;
+        }
+
         .hotel-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
+            z-index: 10;
         }
 
         .hotel-item {
@@ -156,100 +220,172 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="javascript:history.back()" class="back-button">
+    <header style="padding-inline: 35px;">
+        <a href="/information" class="back-button">
             <i class="fas fa-arrow-left"></i>
-            Back to Information
+            <span data-en="Back to Information" data-id="Kembali ke Informasi"></span>
         </a>
 
+        <div class="right">
+            <div class="language-switch">
+                <button class="lang-btn" id="idBtn">ID</button>
+                <button class="lang-btn active" id="enBtn">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
         <div class="filter-card">
-            <h2 style="color: var(--primary); margin-bottom: 1rem;">YIA Partner Hotels</h2>
+            <h2 class="info-title" data-en="Hotels" data-id="Hotel"></h2>
             <div class="filter-section">
-                <select class="filter-dropdown">
-                    <option value="">Distance from Airport</option>
-                    <option value="0-5">0-5 km</option>
-                    <option value="5-10">5-10 km</option>
-                    <option value="10-15">10-15 km</option>
-                    <option value="15+">15+ km</option>
-                </select>
-                <select class="filter-dropdown">
-                    <option value="">Price Range</option>
-                    <option value="budget">Budget (< Rp 500k)</option>
-                    <option value="mid">Mid-range (Rp 500k - 1M)</option>
-                    <option value="luxury">Luxury (> Rp 1M)</option>
-                </select>
+                <x-dropdown>
+                    <x-slot name="trigger">
+                        <button class="filter-dropdown inline-flex items-center justify-between px-3 py-2">
+                            <div>
+                                <p 
+                                    data-en="
+                                        @if (request('jarak'))
+                                            {{ $allDistance[request('jarak')] ?? 'Jarak' }}
+                                        @else
+                                            Distance
+                                        @endif"
+                                    data-id="
+                                        @if (request('jarak'))
+                                            {{ $allDistance[request('jarak')] ?? 'Jarak' }}
+                                        @else
+                                            Jarak
+                                        @endif"
+                                ></p>
+                            </div>
+                            <div class="ms-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        
+                        <x-dropdown-link :href="route('welcome.information.hotel', array_merge(request()->query(), ['jarak' => null]))"
+                            class="{{ is_null(request('jarak')) ? 'bg-gray-200 font-bold' : '' }}" data-en="{{ __('All Distance') }}" data-id="{{ __('Semua Jarak') }}">
+                        </x-dropdown-link>
+                
+                        @foreach ($allDistance as $key => $distance)
+                            <x-dropdown-link :href="route('welcome.information.hotel', array_merge(request()->query(), ['jarak' => $key]))"
+                                class="{{ request('jarak') === $key ? 'bg-gray-200 font-bold' : '' }}">
+                                {{ $distance }}
+                            </x-dropdown-link>
+                        @endforeach
+                
+                    </x-slot>
+                </x-dropdown>
+                
+                <x-dropdown>
+                    <x-slot name="trigger">
+                        <button class="filter-dropdown inline-flex items-center justify-between px-3 py-2">
+                            <div>
+                                <p 
+                                    data-en="
+                                        @if (request('harga') && isset($allPrice[request('harga')]))
+                                            {{ $allPrice[request('harga')] }}
+                                        @else
+                                            Price
+                                        @endif"
+                                    data-id="
+                                        @if (request('harga') && isset($allPrice[request('harga')]))
+                                            {{ $allPrice[request('harga')] }}
+                                        @else
+                                            Harga
+                                        @endif"
+                                ></p>
+                            </div>
+                            <div class="ms-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        
+                        <x-dropdown-link :href="route('welcome.information.hotel', array_merge(request()->query(), ['harga' => null]))"
+                            class="{{ is_null(request('harga')) ? 'bg-gray-200 font-bold' : '' }}" data-en="{{ __('All Price') }}" data-id="{{ __('Semua Harga') }}">   
+                        </x-dropdown-link>
+                
+                        @foreach ($allPrice as $key => $price)
+                            <x-dropdown-link :href="route('welcome.information.hotel', array_merge(request()->query(), ['harga' => $key]))"
+                                class="{{ request('harga') === $key ? 'bg-gray-200 font-bold' : '' }}">
+                                {{ $price }}
+                            </x-dropdown-link>
+                        @endforeach
+                
+                    </x-slot>
+                </x-dropdown>
+                
             </div>
         </div>
 
-        <div class="hotel-grid">
-            <!-- Hotel Item 1 -->
-            <div class="hotel-item">
-                <img src="gambar/Container.svg" alt="Hotel Grand YIA" class="hotel-image">
-                <div class="hotel-info">
-                    <div class="hotel-distance">
-                        <i class="fas fa-location-dot"></i>
-                        2.5 km from Airport
+        @if ($hotels->isEmpty())
+        <p class="text-center justify-center text-gray-500 py-4">
+            No hotels found matching the selected filters.
+        </p>
+        @else
+            <div class="hotel-grid">
+                @foreach ($hotels as $hotel)
+                    <div class="hotel-item">
+                        <img src="{{ url('storage/' . $hotel->foto) }}" alt="{{ $hotel->nama }}" class="hotel-image">
+                        <div class="hotel-info">
+                            <div class="hotel-distance">
+                                <i class="fas fa-location-dot"></i>
+                                <span data-en="{{ $hotel->jarak }} Km from airport" data-id="{{ $hotel->jarak }} Km dari bandara"></span>
+                            </div>
+                            <h3 class="hotel-name">{{ $hotel->nama }}</h3>
+                            <p class="hotel-address">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ $hotel->alamat }}
+                            </p>
+                            <p class="hotel-price" data-en="Start from Rp. {{ number_format($hotel->harga) }}" data-id="Mulai dari Rp. {{ number_format($hotel->harga) }}"></p>
+                        </div>
                     </div>
-                    <h3 class="hotel-name">Hotel Grand YIA</h3>
-                    <p class="hotel-address">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Jl. Wates km 8, Yogyakarta
-                    </p>
-                    <p class="hotel-price">Rp 850k - Rp 1.2M per night</p>
-                </div>
+                @endforeach
             </div>
-
-            <!-- Hotel Item 2 -->
-            <div class="hotel-item">
-                <img src="/api/placeholder/400/320" alt="Transit Inn Express" class="hotel-image">
-                <div class="hotel-info">
-                    <div class="hotel-distance">
-                        <i class="fas fa-location-dot"></i>
-                        0.8 km from Airport
-                    </div>
-                    <h3 class="hotel-name">Transit Inn Express</h3>
-                    <p class="hotel-address">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Jl. Airport Raya No. 10, Yogyakarta
-                    </p>
-                    <p class="hotel-price">Rp 450k - Rp 600k per night</p>
-                </div>
-            </div>
-
-            <!-- Hotel Item 3 -->
-            <div class="hotel-item">
-                <img src="/api/placeholder/400/320" alt="Luxury Airport Resort" class="hotel-image">
-                <div class="hotel-info">
-                    <div class="hotel-distance">
-                        <i class="fas fa-location-dot"></i>
-                        1.2 km from Airport
-                    </div>
-                    <h3 class="hotel-name">Luxury Airport Resort</h3>
-                    <p class="hotel-address">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Jl. Kulon Progo Resort Area, Yogyakarta
-                    </p>
-                    <p class="hotel-price">Rp 1.2M - Rp 2.5M per night</p>
-                </div>
-            </div>
-
-            <!-- Hotel Item 4 -->
-            <div class="hotel-item">
-                <img src="/api/placeholder/400/320" alt="Budget Airport Inn" class="hotel-image">
-                <div class="hotel-info">
-                    <div class="hotel-distance">
-                        <i class="fas fa-location-dot"></i>
-                        3.5 km from Airport
-                    </div>
-                    <h3 class="hotel-name">Budget Airport Inn</h3>
-                    <p class="hotel-address">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Jl. Wates No. 123, Yogyakarta
-                    </p>
-                    <p class="hotel-price">Rp 350k - Rp 450k per night</p>
-                </div>
-            </div>
-        </div>
+        @endif
     </div>
+
+    <script>
+        // Language Switch Functionality
+        document.addEventListener("DOMContentLoaded", function() {
+            let savedLang = localStorage.getItem("selectedLanguage") || "en"; // Default ke 'en'
+            applyLanguage(savedLang);
+        });
+
+        document.getElementById('idBtn').addEventListener('click', function() {
+            setLanguage('id');
+        });
+
+        document.getElementById('enBtn').addEventListener('click', function() {
+            setLanguage('en');
+        });
+
+        function setLanguage(lang) {
+            localStorage.setItem("selectedLanguage", lang); // Simpan ke LocalStorage
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            // Terapkan teks sesuai bahasa
+            document.querySelectorAll('[data-en], [data-id]').forEach(element => {
+                element.textContent = element.getAttribute(`data-${lang}`);
+            });
+
+            // Update tombol aktif
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${lang}Btn`).classList.add('active');
+        }
+
+        // Cegah flash default 'en' saat reload (terapkan sebelum halaman selesai load)
+        let savedLang = localStorage.getItem("selectedLanguage") || "en";
+        applyLanguage(savedLang);
+    </script>
 </body>
 </html>

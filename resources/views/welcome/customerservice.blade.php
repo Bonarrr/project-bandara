@@ -245,7 +245,7 @@
                     <p class="contact-info" data-en="24/7 Customer Support" data-id="Layanan Pelanggan 24/7">24/7 Customer Support</p>
                     <a href="tel:+62274123456" class="call-button">
                         <i class="fas fa-phone"></i>
-                        <span data-en="Call Now" data-id="Hubungi Sekarang">Call Now</span>
+                        <a href="https://meet.google.com/zxy-quns-jzb"><span data-en="Call Now" data-id="Hubungi Sekarang">Call Now</span></a>
                     </a>
                 </div>
             </div>
